@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" conversion:converterVersion="0.8.8" exporter="Camunda Modeler" exporterVersion="5.20.0" expressionLanguage="http://www.w3.org/1999/XPath" id="Definitions_1ff4c90" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0" targetNamespace="http://bpmn.io/schema/bpmn" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <bpmn:process id="OrderPizzaProcess" isClosed="false" isExecutable="true" name="Order pizza" processType="None">
+    <bpmn:extensionElements>
+      <conversion:message severity="INFO">Unused attribute 'historyTimeToLive' on 'process' is removed.</conversion:message>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="OrderRecievedStartEvent" isInterrupting="true" name="order recieved" parallelMultiple="false">
+      <bpmn:outgoing>Flow_15dpzg2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_15dpzg2" sourceRef="OrderRecievedStartEvent" targetRef="CreateOrderTask"/>
+    <bpmn:serviceTask completionQuantity="1" id="CreateOrderTask" implementation="##WebService" isForCompensation="false" name="Create order" startQuantity="1">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'expression' on 'serviceTask' was mapped. Delegate call to '${orderService.create()}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="REVIEW">Attribute 'resultVariable' on 'serviceTask' was mapped. Is now available as header 'resultVariable'.</conversion:message>
+        <conversion:message severity="INFO">Unused attribute 'asyncBefore' on 'serviceTask' is removed.</conversion:message>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="orderId"/>
+          <zeebe:header key="expression" value="${orderService.create()}"/>
+        </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="camunda-7-adapter"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15dpzg2</bpmn:incoming>
+      <bpmn:outgoing>Flow_02dz6d6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_02dz6d6" sourceRef="CreateOrderTask" targetRef="ReceivePaymentTask"/>
+    <bpmn:sequenceFlow id="Flow_162ese4" sourceRef="ReceivePaymentTask" targetRef="MakePizzaTask"/>
+    <bpmn:sequenceFlow id="Flow_1e35ddi" sourceRef="MakePizzaTask" targetRef="HandoverDeliveryTask"/>
+    <bpmn:endEvent id="OrderProcessedEndEvent" name="order processed">
+      <bpmn:incoming>Flow_0z0lq14</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0z0lq14" sourceRef="HandoverDeliveryTask" targetRef="OrderProcessedEndEvent"/>
+    <bpmn:serviceTask completionQuantity="1" id="ReceivePaymentTask" implementation="##WebService" isForCompensation="false" name="Receive payment" startQuantity="1">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'expression' on 'serviceTask' was mapped. Delegate call to '${paymentService.receive(orderId)}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="INFO">Unused attribute 'asyncBefore' on 'serviceTask' is removed.</conversion:message>
+        <zeebe:taskHeaders>
+          <zeebe:header key="expression" value="${paymentService.receive(orderId)}"/>
+        </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="camunda-7-adapter"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_02dz6d6</bpmn:incoming>
+      <bpmn:outgoing>Flow_162ese4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask completionQuantity="1" id="MakePizzaTask" implementation="##WebService" isForCompensation="false" name="Make pizza" startQuantity="1">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'expression' on 'serviceTask' was mapped. Delegate call to '${pizzaService.create(orderId)}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="INFO">Unused attribute 'asyncBefore' on 'serviceTask' is removed.</conversion:message>
+        <zeebe:taskHeaders>
+          <zeebe:header key="expression" value="${pizzaService.create(orderId)}"/>
+        </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="camunda-7-adapter"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_162ese4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e35ddi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask completionQuantity="1" id="HandoverDeliveryTask" implementation="##WebService" isForCompensation="false" name="Handover to delivery" startQuantity="1">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'expression' on 'serviceTask' was mapped. Delegate call to '${deliveryService.start(orderId)}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="INFO">Unused attribute 'asyncBefore' on 'serviceTask' is removed.</conversion:message>
+        <zeebe:taskHeaders>
+          <zeebe:header key="expression" value="${deliveryService.start(orderId)}"/>
+        </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="camunda-7-adapter"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1e35ddi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z0lq14</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane bpmnElement="OrderPizzaProcess" id="BPMNPlane_1">
+      <bpmndi:BPMNShape bpmnElement="OrderRecievedStartEvent" id="_BPMNShape_StartEvent_2">
+        <dc:Bounds height="36" width="36" x="179" y="99"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14" width="71" x="163" y="142"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CreateOrderTask" id="Activity_0txfpqo_di">
+        <dc:Bounds height="80" width="100" x="270" y="77"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="OrderProcessedEndEvent" id="Event_1jt6wso_di">
+        <dc:Bounds height="36" width="36" x="912" y="99"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14" width="80" x="891" y="142"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ReceivePaymentTask" id="Activity_0v09d18_di">
+        <dc:Bounds height="80" width="100" x="430" y="77"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MakePizzaTask" id="Activity_0xxkpmr_di">
+        <dc:Bounds height="80" width="100" x="590" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="HandoverDeliveryTask" id="Activity_1fytj1p_di">
+        <dc:Bounds height="80" width="100" x="750" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="Flow_15dpzg2" id="Flow_15dpzg2_di">
+        <di:waypoint x="215" y="117"/>
+        <di:waypoint x="270" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_02dz6d6" id="Flow_02dz6d6_di">
+        <di:waypoint x="370" y="117"/>
+        <di:waypoint x="430" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0z0lq14" id="Flow_0z0lq14_di">
+        <di:waypoint x="850" y="117"/>
+        <di:waypoint x="912" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_162ese4" id="Flow_162ese4_di">
+        <di:waypoint x="530" y="117"/>
+        <di:waypoint x="590" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1e35ddi" id="Flow_1e35ddi_di">
+        <di:waypoint x="690" y="117"/>
+        <di:waypoint x="750" y="117"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
