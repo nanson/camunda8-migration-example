@@ -9,7 +9,7 @@ import java.util.UUID;
 @Service
 public class DeliveryService {
 
-    public void start(String orderId) {
+    public void start(UUID orderId) {
         log.info("Order has been hanover to delivery service, orderId: {}", orderId);
     }
 }

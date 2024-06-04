@@ -9,7 +9,7 @@ import java.util.UUID;
 @Service
 public class PizzaService {
 
-    public void create(String orderId) {
+    public void create(UUID orderId) {
         log.info("Pizza created, orderId: {}", orderId);
     }
 }
