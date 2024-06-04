@@ -8,7 +8,6 @@
         <version>3.4.2</version>
         <relativePath/>
     </parent>
-
     <groupId>de.telekom.camunda.samples</groupId>
     <artifactId>camunda-migration</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -16,9 +15,22 @@
     <description>camunda-migration</description>
     <properties>
         <java.version>21</java.version>
+        <camunda-7.version>7.22.0</camunda-7.version>
     </properties>
 
     <dependencies>
+
+        <!-- camunda 7 -->
+        <dependency>
+            <groupId>org.camunda.bpm.springboot</groupId>
+            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+            <version>${camunda-7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- others -->
         <dependency>
