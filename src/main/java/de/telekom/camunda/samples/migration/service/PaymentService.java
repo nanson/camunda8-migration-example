@@ -9,7 +9,7 @@ import java.util.UUID;
 @Service
 public class PaymentService {
 
-    public void receive(UUID orderId) {
+    public void receive(String orderId) {
         log.info("Payment received, orderId: {}", orderId);
     }
 }

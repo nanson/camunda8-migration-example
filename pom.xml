@@ -15,21 +15,22 @@
     <description>camunda-migration</description>
     <properties>
         <java.version>21</java.version>
-        <camunda-7.version>7.22.0</camunda-7.version>
+        <camunda-8.version>8.6.9</camunda-8.version>
+        <camunda-7-adapter.version>0.10.4</camunda-7-adapter.version>
     </properties>
 
     <dependencies>
 
-        <!-- camunda 7 -->
+        <!-- camunda 8-->
         <dependency>
-            <groupId>org.camunda.bpm.springboot</groupId>
-            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-            <version>${camunda-7.version}</version>
+            <groupId>io.camunda</groupId>
+            <artifactId>spring-boot-starter-camunda-sdk</artifactId>
+            <version>${camunda-8.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.camunda.community.migration</groupId>
+            <artifactId>camunda-7-adapter</artifactId>
+            <version>${camunda-7-adapter.version}</version>
         </dependency>
 
         <!-- others -->
@@ -48,5 +49,19 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

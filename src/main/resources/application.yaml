@@ -2,11 +2,8 @@ spring:
   application:
     name: camunda-migration
 
-server:
-  port: 8181
-
 camunda:
-  bpm:
-    admin-user:
-      id: demo
-      password: demo
+  client:
+    zeebe:
+      grpc-address: 'http://127.0.0.1:26500'
+      rest-address: 'http://127.0.0.1:8088'
