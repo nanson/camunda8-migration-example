@@ -1,3 +1,9 @@
 spring:
   application:
     name: camunda-migration
+
+camunda:
+  bpm:
+    admin-user:
+      id: demo
+      password: demo

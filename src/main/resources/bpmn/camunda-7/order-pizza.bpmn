@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ff4c90" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="OrderPizzaProcess" name="Order pizza" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="OrderRecievedStartEvent" name="order recieved">
+      <bpmn:outgoing>Flow_15dpzg2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_15dpzg2" sourceRef="OrderRecievedStartEvent" targetRef="CreateOrderTask" />
+    <bpmn:serviceTask id="CreateOrderTask" name="Create order" camunda:asyncBefore="true" camunda:expression="${orderService.create()}" camunda:resultVariable="orderId">
+      <bpmn:incoming>Flow_15dpzg2</bpmn:incoming>
+      <bpmn:outgoing>Flow_02dz6d6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_02dz6d6" sourceRef="CreateOrderTask" targetRef="ReceivePaymentTask" />
+    <bpmn:sequenceFlow id="Flow_162ese4" sourceRef="ReceivePaymentTask" targetRef="MakePizzaTask" />
+    <bpmn:sequenceFlow id="Flow_1e35ddi" sourceRef="MakePizzaTask" targetRef="HandoverDeliveryTask" />
+    <bpmn:endEvent id="OrderProcessedEndEvent" name="order processed">
+      <bpmn:incoming>Flow_0z0lq14</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0z0lq14" sourceRef="HandoverDeliveryTask" targetRef="OrderProcessedEndEvent" />
+    <bpmn:serviceTask id="ReceivePaymentTask" name="Receive payment" camunda:asyncBefore="true" camunda:expression="${paymentService.receive(orderId)}">
+      <bpmn:incoming>Flow_02dz6d6</bpmn:incoming>
+      <bpmn:outgoing>Flow_162ese4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="MakePizzaTask" name="Make pizza" camunda:asyncBefore="true" camunda:expression="${pizzaService.create(orderId)}">
+      <bpmn:incoming>Flow_162ese4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e35ddi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="HandoverDeliveryTask" name="Handover to delivery" camunda:asyncBefore="true" camunda:expression="${deliveryService.start(orderId)}">
+      <bpmn:incoming>Flow_1e35ddi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z0lq14</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="OrderPizzaProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="OrderRecievedStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="163" y="142" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0txfpqo_di" bpmnElement="CreateOrderTask">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1jt6wso_di" bpmnElement="OrderProcessedEndEvent">
+        <dc:Bounds x="912" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="891" y="142" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v09d18_di" bpmnElement="ReceivePaymentTask">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xxkpmr_di" bpmnElement="MakePizzaTask">
+        <dc:Bounds x="590" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1fytj1p_di" bpmnElement="HandoverDeliveryTask">
+        <dc:Bounds x="750" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_15dpzg2_di" bpmnElement="Flow_15dpzg2">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02dz6d6_di" bpmnElement="Flow_02dz6d6">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z0lq14_di" bpmnElement="Flow_0z0lq14">
+        <di:waypoint x="850" y="117" />
+        <di:waypoint x="912" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_162ese4_di" bpmnElement="Flow_162ese4">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="590" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e35ddi_di" bpmnElement="Flow_1e35ddi">
+        <di:waypoint x="690" y="117" />
+        <di:waypoint x="750" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
