@@ -16,7 +16,6 @@
     <properties>
         <java.version>21</java.version>
         <camunda-8.version>8.6.9</camunda-8.version>
-        <camunda-7-adapter.version>0.10.4</camunda-7-adapter.version>
     </properties>
 
     <dependencies>
@@ -26,11 +25,6 @@
             <groupId>io.camunda</groupId>
             <artifactId>spring-boot-starter-camunda-sdk</artifactId>
             <version>${camunda-8.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.camunda.community.migration</groupId>
-            <artifactId>camunda-7-adapter</artifactId>
-            <version>${camunda-7-adapter.version}</version>
         </dependency>
 
         <!-- others -->
