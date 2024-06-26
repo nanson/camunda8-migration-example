@@ -27,6 +27,13 @@
             <version>${camunda-8.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.camunda</groupId>
+            <artifactId>spring-boot-starter-camunda-test</artifactId>
+            <version>${camunda-8.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- others -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
